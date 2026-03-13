@@ -10,19 +10,19 @@ import { SubmitButton } from "@/components/SubmitButton";
 import { submitForm } from "@/lib/submit";
 
 const schema = z.object({
-  businessName: z.string().min(1, "Business name is required"),
+  companyName: z.string().min(1, "Company name is required"),
   contactName: z.string().min(1, "Contact name is required"),
   email: z.string().email("Please enter a valid email"),
   phone: z.string().min(7, "Please enter a valid phone number"),
-  cuisineType: z.string().min(1, "Please select your cuisine type"),
-  locationCount: z.string().min(1, "Please select number of locations"),
+  tradeType: z.string().min(1, "Please select your trade or service type"),
+  serviceArea: z.string().min(1, "Please describe your service area"),
+  clientType: z.string().min(1, "Please select an option"),
+  yearsInBusiness: z.string().min(1, "Please select years in business"),
   hasExistingSite: z.string().min(1, "Please select an option"),
   existingSiteUrl: z.string().optional(),
   wantedFeatures: z.array(z.string()).min(1, "Please select at least one feature"),
-  menuStyle: z.string().min(1, "Please select a menu display preference"),
-  brandColors: z.string().optional(),
-  brandVibe: z.string().min(1, "Please describe your brand vibe"),
-  competitors: z.string().optional(),
+  hasBranding: z.string().min(1, "Please select an option"),
+  brandFeel: z.string().min(1, "Please select a brand feel"),
   timeline: z.string().min(1, "Please select a timeline"),
   budget: z.string().min(1, "Please select a budget range"),
   additionalNotes: z.string().optional(),
@@ -30,9 +30,9 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const FORM_NAME = "restaurant-intake";
+const FORM_NAME = "construction-intake";
 
-export default function RestaurantForm() {
+export default function ConstructionForm() {
   const {
     register,
     handleSubmit,
@@ -44,8 +44,8 @@ export default function RestaurantForm() {
 
   return (
     <FormShell
-      title="Restaurant & Food Service Questionnaire"
-      subtitle="Help us understand your restaurant's brand and what you need from your website."
+      title="Construction & Home Services Questionnaire"
+      subtitle="Tell us about your trade so we can build a website that brings in more jobs."
       formName={FORM_NAME}
     >
       {({ onSubmitSuccess }) => (
@@ -57,14 +57,13 @@ export default function RestaurantForm() {
           })}
           className="space-y-6"
         >
-          {/* Hidden Netlify form field */}
 
           <FormSection title="Contact Information" description="How can we reach you?">
             <div className="grid md:grid-cols-2 gap-5">
-              <FormField label="Business Name" required error={errors.businessName}>
-                <TextInput registration={register("businessName")} placeholder="e.g., Mario's Trattoria" error={errors.businessName} />
+              <FormField label="Company Name" required error={errors.companyName}>
+                <TextInput registration={register("companyName")} placeholder="e.g., Ace Roofing & Construction" error={errors.companyName} />
               </FormField>
-              <FormField label="Your Name" required error={errors.contactName}>
+              <FormField label="Contact Name" required error={errors.contactName}>
                 <TextInput registration={register("contactName")} placeholder="e.g., John Smith" error={errors.contactName} />
               </FormField>
               <FormField label="Email" required error={errors.email}>
@@ -76,44 +75,61 @@ export default function RestaurantForm() {
             </div>
           </FormSection>
 
-          <FormSection title="About Your Restaurant">
-            <FormField label="Cuisine Type" required error={errors.cuisineType}>
+          <FormSection title="About Your Business" description="Help us understand your trade and service area.">
+            <FormField label="Trade / Service Type" required error={errors.tradeType}>
               <SelectInput
-                registration={register("cuisineType")}
-                error={errors.cuisineType}
+                registration={register("tradeType")}
+                error={errors.tradeType}
                 options={[
-                  { value: "american", label: "American" },
-                  { value: "italian", label: "Italian" },
-                  { value: "mexican", label: "Mexican" },
-                  { value: "asian", label: "Asian" },
-                  { value: "seafood", label: "Seafood" },
-                  { value: "bbq", label: "BBQ / Smokehouse" },
-                  { value: "cafe", label: "Cafe / Bakery" },
-                  { value: "bar", label: "Bar / Pub" },
-                  { value: "finedining", label: "Fine Dining" },
-                  { value: "fastcasual", label: "Fast Casual" },
+                  { value: "general-contractor", label: "General Contractor" },
+                  { value: "plumbing", label: "Plumbing" },
+                  { value: "electrical", label: "Electrical" },
+                  { value: "hvac", label: "HVAC" },
+                  { value: "roofing", label: "Roofing" },
+                  { value: "landscaping", label: "Landscaping" },
+                  { value: "painting", label: "Painting" },
+                  { value: "remodeling", label: "Remodeling" },
                   { value: "other", label: "Other" },
                 ]}
               />
             </FormField>
-            <FormField label="Number of Locations" required error={errors.locationCount}>
+            <FormField label="Service Area" required error={errors.serviceArea}>
+              <TextInput registration={register("serviceArea")} placeholder="e.g., Greater Houston area, Dallas-Fort Worth metro..." error={errors.serviceArea} />
+            </FormField>
+            <FormField label="Do you serve residential, commercial, or both?" required error={errors.clientType}>
               <RadioGroup
-                registration={register("locationCount")}
-                error={errors.locationCount}
+                registration={register("clientType")}
+                error={errors.clientType}
                 options={[
-                  { value: "1", label: "Single location" },
-                  { value: "2-5", label: "2-5 locations" },
-                  { value: "5+", label: "5+ locations" },
+                  { value: "residential", label: "Residential" },
+                  { value: "commercial", label: "Commercial" },
+                  { value: "both", label: "Both" },
                 ]}
               />
             </FormField>
+            <FormField label="Years in Business" required error={errors.yearsInBusiness}>
+              <SelectInput
+                registration={register("yearsInBusiness")}
+                error={errors.yearsInBusiness}
+                options={[
+                  { value: "new", label: "Just starting out" },
+                  { value: "1-3", label: "1-3 years" },
+                  { value: "3-5", label: "3-5 years" },
+                  { value: "5-10", label: "5-10 years" },
+                  { value: "10+", label: "10+ years" },
+                ]}
+              />
+            </FormField>
+          </FormSection>
+
+          <FormSection title="Current Online Presence">
             <FormField label="Do you have an existing website?" required error={errors.hasExistingSite}>
               <RadioGroup
                 registration={register("hasExistingSite")}
                 error={errors.hasExistingSite}
                 options={[
                   { value: "yes", label: "Yes" },
-                  { value: "no", label: "No, this is brand new" },
+                  { value: "no", label: "No" },
                 ]}
               />
             </FormField>
@@ -122,56 +138,49 @@ export default function RestaurantForm() {
             </FormField>
           </FormSection>
 
-          <FormSection title="Website Features" description="What do you need your website to do?">
+          <FormSection title="Website Features" description="What should your website include?">
             <FormField label="Desired Features" required error={errors.wantedFeatures}>
               <CheckboxGroup
                 registration={register("wantedFeatures")}
                 error={errors.wantedFeatures}
                 options={[
-                  { value: "menu", label: "Online menu" },
-                  { value: "ordering", label: "Online ordering" },
-                  { value: "reservations", label: "Reservations / table booking" },
-                  { value: "catering", label: "Catering request form" },
-                  { value: "gallery", label: "Photo gallery" },
-                  { value: "events", label: "Events calendar" },
-                  { value: "giftcards", label: "Gift cards" },
+                  { value: "project-gallery", label: "Project gallery / before & after photos" },
+                  { value: "estimate-form", label: "Free estimate request form" },
+                  { value: "service-area-map", label: "Service area map" },
                   { value: "reviews", label: "Customer reviews / testimonials" },
-                  { value: "blog", label: "Blog / News" },
-                  { value: "careers", label: "Careers / Job listings" },
-                ]}
-              />
-            </FormField>
-            <FormField label="How should your menu be displayed?" required error={errors.menuStyle}>
-              <RadioGroup
-                registration={register("menuStyle")}
-                error={errors.menuStyle}
-                options={[
-                  { value: "digital", label: "Fully digital (text on site)" },
-                  { value: "pdf", label: "PDF download" },
-                  { value: "photos", label: "Photos of menu items" },
-                  { value: "unsure", label: "Not sure yet" },
+                  { value: "licensing", label: "Licensing & insurance info" },
+                  { value: "emergency-badge", label: "Emergency / 24-hr service badge" },
+                  { value: "blog", label: "Blog" },
+                  { value: "careers", label: "Careers / hiring page" },
+                  { value: "social", label: "Social media links" },
+                  { value: "contact-form", label: "Contact form" },
                 ]}
               />
             </FormField>
           </FormSection>
 
           <FormSection title="Branding & Style">
-            <FormField label="Brand Colors" error={errors.brandColors}>
-              <TextInput registration={register("brandColors")} placeholder="e.g., Red and gold, earth tones, etc." error={errors.brandColors} />
-            </FormField>
-            <FormField label="Describe the vibe or feeling of your restaurant" required error={errors.brandVibe}>
-              <TextArea
-                registration={register("brandVibe")}
-                placeholder="e.g., Warm and rustic, modern and sleek, family-friendly, upscale..."
-                error={errors.brandVibe}
+            <FormField label="Do you have existing branding (logo, colors, fonts)?" required error={errors.hasBranding}>
+              <RadioGroup
+                registration={register("hasBranding")}
+                error={errors.hasBranding}
+                options={[
+                  { value: "full", label: "Yes — logo, colors, and fonts ready" },
+                  { value: "partial", label: "Partial — I have a logo but need help with the rest" },
+                  { value: "none", label: "No — I need branding help" },
+                ]}
               />
             </FormField>
-            <FormField label="Any restaurants whose websites you admire?" error={errors.competitors}>
-              <TextArea
-                registration={register("competitors")}
-                placeholder="Paste URLs or describe what you like about them"
-                rows={3}
-                error={errors.competitors}
+            <FormField label="What feel should your website have?" required error={errors.brandFeel}>
+              <RadioGroup
+                registration={register("brandFeel")}
+                error={errors.brandFeel}
+                options={[
+                  { value: "rugged", label: "Rugged & tough" },
+                  { value: "professional", label: "Clean & professional" },
+                  { value: "modern", label: "Modern & sleek" },
+                  { value: "friendly", label: "Friendly & approachable" },
+                ]}
               />
             </FormField>
           </FormSection>

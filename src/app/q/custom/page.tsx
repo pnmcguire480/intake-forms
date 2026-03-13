@@ -10,20 +10,23 @@ import { SubmitButton } from "@/components/SubmitButton";
 import { submitForm } from "@/lib/submit";
 
 const schema = z.object({
-  businessName: z.string().min(1, "Business name is required"),
+  nameOrBusiness: z.string().min(1, "Name or business name is required"),
   contactName: z.string().min(1, "Contact name is required"),
   email: z.string().email("Please enter a valid email"),
   phone: z.string().min(7, "Please enter a valid phone number"),
-  industry: z.string().min(1, "Please describe your industry"),
-  businessDescription: z.string().min(10, "Please describe what your business does"),
+  industryField: z.string().min(1, "Please describe your industry or field"),
+  projectDescription: z.string().min(10, "Please describe what you do and what the site is for"),
   targetAudience: z.string().min(1, "Please describe your target audience"),
   hasExistingSite: z.string().min(1, "Please select an option"),
   existingSiteUrl: z.string().optional(),
   siteGoals: z.array(z.string()).min(1, "Please select at least one goal"),
   wantedPages: z.array(z.string()).min(1, "Please select at least one page"),
   wantedFeatures: z.array(z.string()).min(1, "Please select at least one feature"),
+  designStyle: z.string().min(1, "Please select a style"),
+  inspirationSites: z.string().optional(),
   brandStatus: z.string().min(1, "Please select an option"),
-  competitors: z.string().optional(),
+  contentReadiness: z.string().min(1, "Please select an option"),
+  needsPhotography: z.string().min(1, "Please select an option"),
   timeline: z.string().min(1, "Please select a timeline"),
   budget: z.string().min(1, "Please select a budget range"),
   additionalNotes: z.string().optional(),
@@ -31,9 +34,9 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const FORM_NAME = "small-business-intake";
+const FORM_NAME = "custom-intake";
 
-export default function SmallBusinessForm() {
+export default function CustomForm() {
   const {
     register,
     handleSubmit,
@@ -45,8 +48,8 @@ export default function SmallBusinessForm() {
 
   return (
     <FormShell
-      title="Small Business Website Questionnaire"
-      subtitle="Let's get your business online with a site that works as hard as you do."
+      title="Custom Website Questionnaire"
+      subtitle="Tell us about your project — no matter the industry, we'll build the right site for you."
       formName={FORM_NAME}
     >
       {({ onSubmitSuccess }) => (
@@ -61,11 +64,11 @@ export default function SmallBusinessForm() {
 
           <FormSection title="Contact Information" description="How can we reach you?">
             <div className="grid md:grid-cols-2 gap-5">
-              <FormField label="Business Name" required error={errors.businessName}>
-                <TextInput registration={register("businessName")} placeholder="e.g., Smith Plumbing LLC" error={errors.businessName} />
+              <FormField label="Name or Business Name" required error={errors.nameOrBusiness}>
+                <TextInput registration={register("nameOrBusiness")} placeholder="e.g., Jane Doe or Acme Corp" error={errors.nameOrBusiness} />
               </FormField>
-              <FormField label="Your Name" required error={errors.contactName}>
-                <TextInput registration={register("contactName")} placeholder="e.g., John Smith" error={errors.contactName} />
+              <FormField label="Contact Name" required error={errors.contactName}>
+                <TextInput registration={register("contactName")} placeholder="e.g., Jane Doe" error={errors.contactName} />
               </FormField>
               <FormField label="Email" required error={errors.email}>
                 <TextInput registration={register("email")} type="email" placeholder="you@example.com" error={errors.email} />
@@ -76,22 +79,22 @@ export default function SmallBusinessForm() {
             </div>
           </FormSection>
 
-          <FormSection title="About Your Business">
-            <FormField label="Industry / Type of Business" required error={errors.industry}>
-              <TextInput registration={register("industry")} placeholder="e.g., Plumbing, Landscaping, Consulting..." error={errors.industry} />
+          <FormSection title="About Your Project">
+            <FormField label="Industry / Field" required error={errors.industryField}>
+              <TextInput registration={register("industryField")} placeholder="e.g., Healthcare, Education, Real Estate, Creative Arts..." error={errors.industryField} />
             </FormField>
-            <FormField label="What does your business do?" required error={errors.businessDescription}>
+            <FormField label="Describe what you do and what the site is for" required error={errors.projectDescription}>
               <TextArea
-                registration={register("businessDescription")}
-                placeholder="Describe your services, products, and what sets you apart from competitors..."
+                registration={register("projectDescription")}
+                placeholder="Tell us about your business, organization, or project and what you want the website to accomplish..."
                 rows={4}
-                error={errors.businessDescription}
+                error={errors.projectDescription}
               />
             </FormField>
             <FormField label="Who is your target audience?" required error={errors.targetAudience}>
               <TextArea
                 registration={register("targetAudience")}
-                placeholder="e.g., Homeowners in the Dallas area, small businesses, young professionals..."
+                placeholder="e.g., Local families, B2B clients, students, hobbyists..."
                 rows={3}
                 error={errors.targetAudience}
               />
@@ -111,19 +114,20 @@ export default function SmallBusinessForm() {
             </FormField>
           </FormSection>
 
-          <FormSection title="Website Goals" description="What should your website do for your business?">
+          <FormSection title="Website Goals" description="What should your website accomplish?">
             <FormField label="Primary goals" required error={errors.siteGoals}>
               <CheckboxGroup
                 registration={register("siteGoals")}
                 error={errors.siteGoals}
                 options={[
-                  { value: "credibility", label: "Establish credibility & professionalism" },
-                  { value: "leads", label: "Generate leads / inquiries" },
-                  { value: "info", label: "Provide information about services" },
-                  { value: "seo", label: "Show up in Google searches" },
-                  { value: "booking", label: "Allow online booking / scheduling" },
-                  { value: "sell", label: "Sell products online" },
-                  { value: "showcase", label: "Showcase past work / portfolio" },
+                  { value: "online-presence", label: "Establish an online presence" },
+                  { value: "generate-leads", label: "Generate leads" },
+                  { value: "sell", label: "Sell products or services" },
+                  { value: "provide-info", label: "Provide information" },
+                  { value: "build-community", label: "Build community" },
+                  { value: "bookings", label: "Accept bookings / appointments" },
+                  { value: "showcase-work", label: "Showcase work" },
+                  { value: "other", label: "Other" },
                 ]}
               />
             </FormField>
@@ -136,54 +140,94 @@ export default function SmallBusinessForm() {
                 error={errors.wantedPages}
                 options={[
                   { value: "home", label: "Home" },
-                  { value: "about", label: "About Us" },
-                  { value: "services", label: "Services" },
-                  { value: "gallery", label: "Gallery / Portfolio" },
-                  { value: "testimonials", label: "Testimonials" },
+                  { value: "about", label: "About" },
+                  { value: "services-products", label: "Services / Products" },
+                  { value: "gallery-portfolio", label: "Gallery / Portfolio" },
+                  { value: "blog", label: "Blog" },
                   { value: "contact", label: "Contact" },
                   { value: "faq", label: "FAQ" },
-                  { value: "blog", label: "Blog" },
+                  { value: "testimonials", label: "Testimonials" },
                   { value: "pricing", label: "Pricing" },
-                  { value: "team", label: "Team / Staff" },
+                  { value: "team", label: "Team" },
                 ]}
               />
             </FormField>
-            <FormField label="Special features" required error={errors.wantedFeatures}>
+            <FormField label="What features do you need?" required error={errors.wantedFeatures}>
               <CheckboxGroup
                 registration={register("wantedFeatures")}
                 error={errors.wantedFeatures}
                 options={[
                   { value: "contact-form", label: "Contact form" },
-                  { value: "maps", label: "Google Maps integration" },
-                  { value: "reviews", label: "Customer reviews" },
-                  { value: "social", label: "Social media integration" },
-                  { value: "chat", label: "Live chat" },
-                  { value: "newsletter", label: "Email newsletter signup" },
-                  { value: "booking", label: "Online scheduling / booking" },
-                  { value: "payments", label: "Online payments" },
+                  { value: "social-media", label: "Social media integration" },
+                  { value: "newsletter", label: "Newsletter signup" },
+                  { value: "scheduling", label: "Online scheduling" },
+                  { value: "ecommerce", label: "E-commerce / Payments" },
+                  { value: "maps", label: "Maps / Location" },
+                  { value: "live-chat", label: "Live chat" },
+                  { value: "search", label: "Search" },
+                  { value: "member-portal", label: "Member / Client portal" },
                 ]}
               />
             </FormField>
           </FormSection>
 
-          <FormSection title="Branding">
+          <FormSection title="Design Preferences">
+            <FormField label="What style best fits your project?" required error={errors.designStyle}>
+              <RadioGroup
+                registration={register("designStyle")}
+                error={errors.designStyle}
+                options={[
+                  { value: "minimal", label: "Minimal" },
+                  { value: "bold", label: "Bold" },
+                  { value: "elegant", label: "Elegant" },
+                  { value: "playful", label: "Playful" },
+                  { value: "professional", label: "Professional" },
+                  { value: "not-sure", label: "Not sure" },
+                ]}
+              />
+            </FormField>
+            <FormField label="Any websites you admire or want to use as inspiration?" error={errors.inspirationSites}>
+              <TextArea
+                registration={register("inspirationSites")}
+                placeholder="Paste URLs or describe what you like about them"
+                rows={3}
+                error={errors.inspirationSites}
+              />
+            </FormField>
             <FormField label="Do you have existing branding (logo, colors, fonts)?" required error={errors.brandStatus}>
               <RadioGroup
                 registration={register("brandStatus")}
                 error={errors.brandStatus}
                 options={[
-                  { value: "full", label: "Yes — logo, colors, and fonts ready" },
-                  { value: "partial", label: "Partial — I have a logo but need help with the rest" },
+                  { value: "full", label: "Yes — I have a full brand (logo, colors, fonts)" },
+                  { value: "partial", label: "Partial — I have some elements but need help" },
                   { value: "none", label: "No — I need branding help" },
                 ]}
               />
             </FormField>
-            <FormField label="Any competitors or sites you admire?" error={errors.competitors}>
-              <TextArea
-                registration={register("competitors")}
-                placeholder="Paste URLs or describe what you like about them"
-                rows={3}
-                error={errors.competitors}
+          </FormSection>
+
+          <FormSection title="Content">
+            <FormField label="Do you have content ready (text, images, etc.)?" required error={errors.contentReadiness}>
+              <RadioGroup
+                registration={register("contentReadiness")}
+                error={errors.contentReadiness}
+                options={[
+                  { value: "yes-all", label: "Yes — all content is ready" },
+                  { value: "some", label: "Some — I have partial content" },
+                  { value: "none", label: "No — I need help creating content" },
+                ]}
+              />
+            </FormField>
+            <FormField label="Will you need photography or graphics?" required error={errors.needsPhotography}>
+              <RadioGroup
+                registration={register("needsPhotography")}
+                error={errors.needsPhotography}
+                options={[
+                  { value: "yes", label: "Yes" },
+                  { value: "no", label: "No" },
+                  { value: "maybe", label: "Maybe — not sure yet" },
+                ]}
               />
             </FormField>
           </FormSection>
@@ -221,7 +265,7 @@ export default function SmallBusinessForm() {
             <FormField label="Additional notes or questions" error={errors.additionalNotes}>
               <TextArea
                 registration={register("additionalNotes")}
-                placeholder="Anything else you'd like us to know..."
+                placeholder="Anything else you'd like us to know about your project..."
                 rows={4}
                 error={errors.additionalNotes}
               />

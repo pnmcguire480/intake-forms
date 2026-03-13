@@ -10,19 +10,19 @@ import { SubmitButton } from "@/components/SubmitButton";
 import { submitForm } from "@/lib/submit";
 
 const schema = z.object({
-  businessName: z.string().min(1, "Business name is required"),
+  businessName: z.string().min(1, "Business or agency name is required"),
   contactName: z.string().min(1, "Contact name is required"),
   email: z.string().email("Please enter a valid email"),
   phone: z.string().min(7, "Please enter a valid phone number"),
-  cuisineType: z.string().min(1, "Please select your cuisine type"),
-  locationCount: z.string().min(1, "Please select number of locations"),
+  role: z.string().min(1, "Please select your role"),
+  serviceArea: z.string().min(1, "Please describe your service area"),
+  specialization: z.array(z.string()).min(1, "Please select at least one specialization"),
   hasExistingSite: z.string().min(1, "Please select an option"),
   existingSiteUrl: z.string().optional(),
+  mlsProvider: z.string().optional(),
   wantedFeatures: z.array(z.string()).min(1, "Please select at least one feature"),
-  menuStyle: z.string().min(1, "Please select a menu display preference"),
-  brandColors: z.string().optional(),
-  brandVibe: z.string().min(1, "Please describe your brand vibe"),
-  competitors: z.string().optional(),
+  hasBranding: z.string().min(1, "Please select an option"),
+  stylePreference: z.string().min(1, "Please select a style preference"),
   timeline: z.string().min(1, "Please select a timeline"),
   budget: z.string().min(1, "Please select a budget range"),
   additionalNotes: z.string().optional(),
@@ -30,9 +30,9 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const FORM_NAME = "restaurant-intake";
+const FORM_NAME = "real-estate-intake";
 
-export default function RestaurantForm() {
+export default function RealEstateForm() {
   const {
     register,
     handleSubmit,
@@ -44,8 +44,8 @@ export default function RestaurantForm() {
 
   return (
     <FormShell
-      title="Restaurant & Food Service Questionnaire"
-      subtitle="Help us understand your restaurant's brand and what you need from your website."
+      title="Real Estate Website Questionnaire"
+      subtitle="Help us understand your real estate business and what you need from your website."
       formName={FORM_NAME}
     >
       {({ onSubmitSuccess }) => (
@@ -61,11 +61,11 @@ export default function RestaurantForm() {
 
           <FormSection title="Contact Information" description="How can we reach you?">
             <div className="grid md:grid-cols-2 gap-5">
-              <FormField label="Business Name" required error={errors.businessName}>
-                <TextInput registration={register("businessName")} placeholder="e.g., Mario's Trattoria" error={errors.businessName} />
+              <FormField label="Business / Agency Name" required error={errors.businessName}>
+                <TextInput registration={register("businessName")} placeholder="e.g., Summit Realty Group" error={errors.businessName} />
               </FormField>
               <FormField label="Your Name" required error={errors.contactName}>
-                <TextInput registration={register("contactName")} placeholder="e.g., John Smith" error={errors.contactName} />
+                <TextInput registration={register("contactName")} placeholder="e.g., Jane Doe" error={errors.contactName} />
               </FormField>
               <FormField label="Email" required error={errors.email}>
                 <TextInput registration={register("email")} type="email" placeholder="you@example.com" error={errors.email} />
@@ -76,37 +76,43 @@ export default function RestaurantForm() {
             </div>
           </FormSection>
 
-          <FormSection title="About Your Restaurant">
-            <FormField label="Cuisine Type" required error={errors.cuisineType}>
+          <FormSection title="About Your Business" description="Tell us about your real estate practice.">
+            <FormField label="Your Role" required error={errors.role}>
               <SelectInput
-                registration={register("cuisineType")}
-                error={errors.cuisineType}
+                registration={register("role")}
+                error={errors.role}
                 options={[
-                  { value: "american", label: "American" },
-                  { value: "italian", label: "Italian" },
-                  { value: "mexican", label: "Mexican" },
-                  { value: "asian", label: "Asian" },
-                  { value: "seafood", label: "Seafood" },
-                  { value: "bbq", label: "BBQ / Smokehouse" },
-                  { value: "cafe", label: "Cafe / Bakery" },
-                  { value: "bar", label: "Bar / Pub" },
-                  { value: "finedining", label: "Fine Dining" },
-                  { value: "fastcasual", label: "Fast Casual" },
-                  { value: "other", label: "Other" },
+                  { value: "agent", label: "Individual Agent" },
+                  { value: "broker", label: "Broker / Brokerage" },
+                  { value: "team", label: "Real Estate Team" },
+                  { value: "property-manager", label: "Property Manager" },
+                  { value: "developer", label: "Real Estate Developer" },
                 ]}
               />
             </FormField>
-            <FormField label="Number of Locations" required error={errors.locationCount}>
-              <RadioGroup
-                registration={register("locationCount")}
-                error={errors.locationCount}
+            <FormField label="Service Area" required error={errors.serviceArea}>
+              <TextInput
+                registration={register("serviceArea")}
+                placeholder="e.g., Greater Denver Metro, Orange County CA"
+                error={errors.serviceArea}
+              />
+            </FormField>
+            <FormField label="Specialization" required error={errors.specialization}>
+              <CheckboxGroup
+                registration={register("specialization")}
+                error={errors.specialization}
                 options={[
-                  { value: "1", label: "Single location" },
-                  { value: "2-5", label: "2-5 locations" },
-                  { value: "5+", label: "5+ locations" },
+                  { value: "residential", label: "Residential" },
+                  { value: "commercial", label: "Commercial" },
+                  { value: "luxury", label: "Luxury" },
+                  { value: "rentals", label: "Rentals" },
+                  { value: "land", label: "Land" },
                 ]}
               />
             </FormField>
+          </FormSection>
+
+          <FormSection title="Current Online Presence">
             <FormField label="Do you have an existing website?" required error={errors.hasExistingSite}>
               <RadioGroup
                 registration={register("hasExistingSite")}
@@ -120,6 +126,13 @@ export default function RestaurantForm() {
             <FormField label="Existing Website URL (if applicable)" error={errors.existingSiteUrl}>
               <TextInput registration={register("existingSiteUrl")} placeholder="https://..." error={errors.existingSiteUrl} />
             </FormField>
+            <FormField label="MLS Provider" error={errors.mlsProvider}>
+              <TextInput
+                registration={register("mlsProvider")}
+                placeholder="e.g., REcolorado, CRMLS, Bright MLS"
+                error={errors.mlsProvider}
+              />
+            </FormField>
           </FormSection>
 
           <FormSection title="Website Features" description="What do you need your website to do?">
@@ -128,50 +141,46 @@ export default function RestaurantForm() {
                 registration={register("wantedFeatures")}
                 error={errors.wantedFeatures}
                 options={[
-                  { value: "menu", label: "Online menu" },
-                  { value: "ordering", label: "Online ordering" },
-                  { value: "reservations", label: "Reservations / table booking" },
-                  { value: "catering", label: "Catering request form" },
-                  { value: "gallery", label: "Photo gallery" },
-                  { value: "events", label: "Events calendar" },
-                  { value: "giftcards", label: "Gift cards" },
-                  { value: "reviews", label: "Customer reviews / testimonials" },
-                  { value: "blog", label: "Blog / News" },
-                  { value: "careers", label: "Careers / Job listings" },
-                ]}
-              />
-            </FormField>
-            <FormField label="How should your menu be displayed?" required error={errors.menuStyle}>
-              <RadioGroup
-                registration={register("menuStyle")}
-                error={errors.menuStyle}
-                options={[
-                  { value: "digital", label: "Fully digital (text on site)" },
-                  { value: "pdf", label: "PDF download" },
-                  { value: "photos", label: "Photos of menu items" },
-                  { value: "unsure", label: "Not sure yet" },
+                  { value: "idx-mls", label: "IDX / MLS integration" },
+                  { value: "property-search", label: "Property search" },
+                  { value: "virtual-tours", label: "Virtual tours" },
+                  { value: "mortgage-calculator", label: "Mortgage calculator" },
+                  { value: "neighborhood-guides", label: "Neighborhood guides" },
+                  { value: "agent-profiles", label: "Agent profiles" },
+                  { value: "testimonials", label: "Client testimonials" },
+                  { value: "blog", label: "Blog" },
+                  { value: "lead-capture", label: "Lead capture forms" },
+                  { value: "crm-integration", label: "CRM integration" },
+                  { value: "market-reports", label: "Market reports" },
                 ]}
               />
             </FormField>
           </FormSection>
 
           <FormSection title="Branding & Style">
-            <FormField label="Brand Colors" error={errors.brandColors}>
-              <TextInput registration={register("brandColors")} placeholder="e.g., Red and gold, earth tones, etc." error={errors.brandColors} />
-            </FormField>
-            <FormField label="Describe the vibe or feeling of your restaurant" required error={errors.brandVibe}>
-              <TextArea
-                registration={register("brandVibe")}
-                placeholder="e.g., Warm and rustic, modern and sleek, family-friendly, upscale..."
-                error={errors.brandVibe}
+            <FormField label="Do you have existing branding (logo, colors, fonts)?" required error={errors.hasBranding}>
+              <RadioGroup
+                registration={register("hasBranding")}
+                error={errors.hasBranding}
+                options={[
+                  { value: "yes", label: "Yes, I have established branding" },
+                  { value: "partial", label: "Partial — I have some assets" },
+                  { value: "no", label: "No, I need branding help" },
+                ]}
               />
             </FormField>
-            <FormField label="Any restaurants whose websites you admire?" error={errors.competitors}>
-              <TextArea
-                registration={register("competitors")}
-                placeholder="Paste URLs or describe what you like about them"
-                rows={3}
-                error={errors.competitors}
+            <FormField label="Style Preference" required error={errors.stylePreference}>
+              <SelectInput
+                registration={register("stylePreference")}
+                error={errors.stylePreference}
+                options={[
+                  { value: "modern-minimal", label: "Modern & Minimal" },
+                  { value: "luxury-elegant", label: "Luxury & Elegant" },
+                  { value: "warm-inviting", label: "Warm & Inviting" },
+                  { value: "bold-professional", label: "Bold & Professional" },
+                  { value: "classic-traditional", label: "Classic & Traditional" },
+                  { value: "unsure", label: "Not sure yet" },
+                ]}
               />
             </FormField>
           </FormSection>

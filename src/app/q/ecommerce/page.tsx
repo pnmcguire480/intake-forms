@@ -59,7 +59,6 @@ export default function EcommerceForm() {
           })}
           className="space-y-6"
         >
-          <input type="hidden" name="form-name" value={FORM_NAME} />
 
           <FormSection title="Contact Information" description="How can we reach you?">
             <div className="grid md:grid-cols-2 gap-5">

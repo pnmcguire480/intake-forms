@@ -1,26 +1,12 @@
 export async function submitForm(formName: string, data: Record<string, unknown>) {
-  // Flatten nested objects for Netlify Forms
-  const flatData: Record<string, string> = {};
-  for (const [key, value] of Object.entries(data)) {
-    if (Array.isArray(value)) {
-      flatData[key] = value.join(", ");
-    } else if (value !== undefined && value !== null) {
-      flatData[key] = String(value);
-    }
-  }
-
-  const body = new URLSearchParams({
-    "form-name": formName,
-    ...flatData,
-  });
-
-  const response = await fetch("/", {
+  const response = await fetch("/api/submit", {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: body.toString(),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ formName, data }),
   });
 
   if (!response.ok) {
-    throw new Error("Submission failed. Please try again.");
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || "Submission failed. Please try again.");
   }
 }

@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Submission {
+  id          String   @id @default(cuid())
+  formType    String   @map("form_type")
+  contactName String   @map("contact_name")
+  email       String
+  phone       String?
+  businessName String? @map("business_name")
+  data        Json
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([formType])
+  @@index([createdAt])
+  @@map("submissions")
+}

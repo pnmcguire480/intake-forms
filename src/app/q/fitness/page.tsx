@@ -14,15 +14,14 @@ const schema = z.object({
   contactName: z.string().min(1, "Contact name is required"),
   email: z.string().email("Please enter a valid email"),
   phone: z.string().min(7, "Please enter a valid phone number"),
-  cuisineType: z.string().min(1, "Please select your cuisine type"),
+  businessType: z.string().min(1, "Please select your business type"),
   locationCount: z.string().min(1, "Please select number of locations"),
+  servicesOffered: z.string().min(1, "Please describe the services you offer"),
   hasExistingSite: z.string().min(1, "Please select an option"),
   existingSiteUrl: z.string().optional(),
   wantedFeatures: z.array(z.string()).min(1, "Please select at least one feature"),
-  menuStyle: z.string().min(1, "Please select a menu display preference"),
-  brandColors: z.string().optional(),
-  brandVibe: z.string().min(1, "Please describe your brand vibe"),
-  competitors: z.string().optional(),
+  hasBranding: z.string().min(1, "Please select an option"),
+  brandVibe: z.string().min(1, "Please select a brand vibe"),
   timeline: z.string().min(1, "Please select a timeline"),
   budget: z.string().min(1, "Please select a budget range"),
   additionalNotes: z.string().optional(),
@@ -30,9 +29,9 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const FORM_NAME = "restaurant-intake";
+const FORM_NAME = "fitness-intake";
 
-export default function RestaurantForm() {
+export default function FitnessForm() {
   const {
     register,
     handleSubmit,
@@ -44,8 +43,8 @@ export default function RestaurantForm() {
 
   return (
     <FormShell
-      title="Restaurant & Food Service Questionnaire"
-      subtitle="Help us understand your restaurant's brand and what you need from your website."
+      title="Fitness & Wellness Questionnaire"
+      subtitle="Help us understand your fitness or wellness business and what you need from your website."
       formName={FORM_NAME}
     >
       {({ onSubmitSuccess }) => (
@@ -62,7 +61,7 @@ export default function RestaurantForm() {
           <FormSection title="Contact Information" description="How can we reach you?">
             <div className="grid md:grid-cols-2 gap-5">
               <FormField label="Business Name" required error={errors.businessName}>
-                <TextInput registration={register("businessName")} placeholder="e.g., Mario's Trattoria" error={errors.businessName} />
+                <TextInput registration={register("businessName")} placeholder="e.g., Peak Performance Gym" error={errors.businessName} />
               </FormField>
               <FormField label="Your Name" required error={errors.contactName}>
                 <TextInput registration={register("contactName")} placeholder="e.g., John Smith" error={errors.contactName} />
@@ -76,22 +75,20 @@ export default function RestaurantForm() {
             </div>
           </FormSection>
 
-          <FormSection title="About Your Restaurant">
-            <FormField label="Cuisine Type" required error={errors.cuisineType}>
+          <FormSection title="About Your Business">
+            <FormField label="Business Type" required error={errors.businessType}>
               <SelectInput
-                registration={register("cuisineType")}
-                error={errors.cuisineType}
+                registration={register("businessType")}
+                error={errors.businessType}
                 options={[
-                  { value: "american", label: "American" },
-                  { value: "italian", label: "Italian" },
-                  { value: "mexican", label: "Mexican" },
-                  { value: "asian", label: "Asian" },
-                  { value: "seafood", label: "Seafood" },
-                  { value: "bbq", label: "BBQ / Smokehouse" },
-                  { value: "cafe", label: "Cafe / Bakery" },
-                  { value: "bar", label: "Bar / Pub" },
-                  { value: "finedining", label: "Fine Dining" },
-                  { value: "fastcasual", label: "Fast Casual" },
+                  { value: "gym", label: "Gym" },
+                  { value: "personal-trainer", label: "Personal Trainer" },
+                  { value: "yoga-studio", label: "Yoga Studio" },
+                  { value: "pilates", label: "Pilates" },
+                  { value: "spa", label: "Spa" },
+                  { value: "wellness-coaching", label: "Wellness Coaching" },
+                  { value: "martial-arts", label: "Martial Arts" },
+                  { value: "crossfit", label: "CrossFit" },
                   { value: "other", label: "Other" },
                 ]}
               />
@@ -107,6 +104,17 @@ export default function RestaurantForm() {
                 ]}
               />
             </FormField>
+            <FormField label="Services Offered" required error={errors.servicesOffered}>
+              <TextArea
+                registration={register("servicesOffered")}
+                placeholder="Describe the services you offer (e.g., personal training, group classes, nutrition coaching...)"
+                rows={3}
+                error={errors.servicesOffered}
+              />
+            </FormField>
+          </FormSection>
+
+          <FormSection title="Current Online Presence">
             <FormField label="Do you have an existing website?" required error={errors.hasExistingSite}>
               <RadioGroup
                 registration={register("hasExistingSite")}
@@ -128,50 +136,46 @@ export default function RestaurantForm() {
                 registration={register("wantedFeatures")}
                 error={errors.wantedFeatures}
                 options={[
-                  { value: "menu", label: "Online menu" },
-                  { value: "ordering", label: "Online ordering" },
-                  { value: "reservations", label: "Reservations / table booking" },
-                  { value: "catering", label: "Catering request form" },
-                  { value: "gallery", label: "Photo gallery" },
-                  { value: "events", label: "Events calendar" },
-                  { value: "giftcards", label: "Gift cards" },
-                  { value: "reviews", label: "Customer reviews / testimonials" },
-                  { value: "blog", label: "Blog / News" },
-                  { value: "careers", label: "Careers / Job listings" },
-                ]}
-              />
-            </FormField>
-            <FormField label="How should your menu be displayed?" required error={errors.menuStyle}>
-              <RadioGroup
-                registration={register("menuStyle")}
-                error={errors.menuStyle}
-                options={[
-                  { value: "digital", label: "Fully digital (text on site)" },
-                  { value: "pdf", label: "PDF download" },
-                  { value: "photos", label: "Photos of menu items" },
-                  { value: "unsure", label: "Not sure yet" },
+                  { value: "class-schedule", label: "Class schedules / timetable" },
+                  { value: "online-booking", label: "Online booking" },
+                  { value: "membership-signup", label: "Membership signup" },
+                  { value: "trainer-profiles", label: "Trainer / staff profiles" },
+                  { value: "pricing", label: "Pricing / plans page" },
+                  { value: "transformation-gallery", label: "Transformation gallery / before & after" },
+                  { value: "testimonials", label: "Client testimonials" },
+                  { value: "blog", label: "Blog / tips" },
+                  { value: "virtual-classes", label: "Virtual classes info" },
+                  { value: "shop", label: "Merchandise / supplement shop" },
+                  { value: "contact-form", label: "Contact form" },
+                  { value: "social-media", label: "Social media integration" },
                 ]}
               />
             </FormField>
           </FormSection>
 
           <FormSection title="Branding & Style">
-            <FormField label="Brand Colors" error={errors.brandColors}>
-              <TextInput registration={register("brandColors")} placeholder="e.g., Red and gold, earth tones, etc." error={errors.brandColors} />
-            </FormField>
-            <FormField label="Describe the vibe or feeling of your restaurant" required error={errors.brandVibe}>
-              <TextArea
-                registration={register("brandVibe")}
-                placeholder="e.g., Warm and rustic, modern and sleek, family-friendly, upscale..."
-                error={errors.brandVibe}
+            <FormField label="Do you have existing branding (logo, colors, fonts)?" required error={errors.hasBranding}>
+              <RadioGroup
+                registration={register("hasBranding")}
+                error={errors.hasBranding}
+                options={[
+                  { value: "yes", label: "Yes, I have branding ready" },
+                  { value: "partial", label: "Partially (some elements)" },
+                  { value: "no", label: "No, I need branding help" },
+                ]}
               />
             </FormField>
-            <FormField label="Any restaurants whose websites you admire?" error={errors.competitors}>
-              <TextArea
-                registration={register("competitors")}
-                placeholder="Paste URLs or describe what you like about them"
-                rows={3}
-                error={errors.competitors}
+            <FormField label="What vibe best describes your brand?" required error={errors.brandVibe}>
+              <RadioGroup
+                registration={register("brandVibe")}
+                error={errors.brandVibe}
+                options={[
+                  { value: "energetic", label: "Energetic" },
+                  { value: "calm", label: "Calm" },
+                  { value: "luxury", label: "Luxury" },
+                  { value: "community", label: "Community" },
+                  { value: "motivational", label: "Motivational" },
+                ]}
               />
             </FormField>
           </FormSection>

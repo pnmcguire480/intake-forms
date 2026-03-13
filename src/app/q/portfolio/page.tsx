@@ -57,7 +57,6 @@ export default function PortfolioForm() {
           })}
           className="space-y-6"
         >
-          <input type="hidden" name="form-name" value={FORM_NAME} />
 
           <FormSection title="About You">
             <div className="grid md:grid-cols-2 gap-5">
