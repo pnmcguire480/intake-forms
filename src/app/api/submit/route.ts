@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { Resend } from "resend";
+import { isRateLimited } from "@/lib/rate-limit";
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY);
@@ -9,6 +10,19 @@ const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || "pnmcguire4@gmail.com";
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting — 5 submissions per IP per 15 minutes
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many submissions. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { formName, data } = body as {
       formName: string;
@@ -21,6 +35,15 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Honeypot — if the hidden field has a value, it's a bot
+    if (data._hp_website) {
+      // Silently accept so bots think it worked
+      return NextResponse.json({ success: true });
+    }
+
+    // Strip honeypot field before saving
+    delete data._hp_website;
 
     // Extract common fields for indexed columns
     const contactName =
