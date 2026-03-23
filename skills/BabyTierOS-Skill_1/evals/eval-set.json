@@ -1,0 +1,102 @@
+[
+  {
+    "query": "I want to start a new project, can you set up my docs?",
+    "should_trigger": true,
+    "expected_behavior": "Asks what the project is about, then scaffolds BabyTierOS template files"
+  },
+  {
+    "query": "Help me scaffold a new app with proper documentation",
+    "should_trigger": true,
+    "expected_behavior": "Runs scaffold process, creates template files, guides through CONTEXT → SPEC → ARCHITECTURE"
+  },
+  {
+    "query": "I need to write a SPEC.md for my food sharing platform",
+    "should_trigger": true,
+    "expected_behavior": "Reads the SPEC.md template from references, asks guided questions about users and features"
+  },
+  {
+    "query": "How should I organize my AI development workflow?",
+    "should_trigger": true,
+    "expected_behavior": "Explains the five-tier system and helps configure AGENTS.md"
+  },
+  {
+    "query": "Help me set up CLAUDE.md for my repo",
+    "should_trigger": true,
+    "expected_behavior": "Reads CLAUDE.md template, guides through Project Identity and AI Agent Rules sections"
+  },
+  {
+    "query": "What art direction should my app have?",
+    "should_trigger": true,
+    "expected_behavior": "Reads ART.md template, guides through design philosophy, color palette, typography"
+  },
+  {
+    "query": "I need to define user scenarios for my lending library app",
+    "should_trigger": true,
+    "expected_behavior": "Reads SCENARIOS.md template, helps write user flows with happy paths and edge cases"
+  },
+  {
+    "query": "Set up my project with BabyTierOS",
+    "should_trigger": true,
+    "expected_behavior": "Recognizes the methodology name, scaffolds all templates"
+  },
+  {
+    "query": "What tech stack should I use for a map-based PWA?",
+    "should_trigger": true,
+    "expected_behavior": "Reads ARCHITECTURE.md template, helps populate the tech stack table with rationale"
+  },
+  {
+    "query": "Help me set up coding conventions for my TypeScript project",
+    "should_trigger": true,
+    "expected_behavior": "Reads CODEGUIDE.md template, guides through naming, style, git workflow sections"
+  },
+  {
+    "query": "How do I configure which AI model to use for different tasks?",
+    "should_trigger": true,
+    "expected_behavior": "Explains the five-tier LLM routing system and helps assign tools to tiers"
+  },
+  {
+    "query": "Fix the bug in my login component",
+    "should_trigger": false,
+    "expected_behavior": "This is a coding task, not a scaffolding or methodology task"
+  },
+  {
+    "query": "What is the capital of France?",
+    "should_trigger": false,
+    "expected_behavior": "General knowledge question, unrelated to project methodology"
+  },
+  {
+    "query": "Write a React component for a user profile card",
+    "should_trigger": false,
+    "expected_behavior": "Component creation — should be handled by coding skills, not scaffolding"
+  },
+  {
+    "query": "Deploy my app to Netlify",
+    "should_trigger": false,
+    "expected_behavior": "Deployment task, not project structure setup"
+  },
+  {
+    "query": "Review my pull request for security issues",
+    "should_trigger": false,
+    "expected_behavior": "Code review task, not methodology setup"
+  },
+  {
+    "query": "How do I use Supabase row-level security?",
+    "should_trigger": false,
+    "expected_behavior": "Technical question about a specific tool, not project scaffolding"
+  },
+  {
+    "query": "I'm starting fresh on a campaign website, help me plan it properly with all the right docs",
+    "should_trigger": true,
+    "expected_behavior": "Recognizes project initiation, scaffolds templates, begins with CONTEXT.md"
+  },
+  {
+    "query": "My project has no documentation and I want to fix that",
+    "should_trigger": true,
+    "expected_behavior": "Offers to scaffold BabyTierOS templates and migrate existing knowledge into them"
+  },
+  {
+    "query": "What files should I have in my repo to work well with Claude Code?",
+    "should_trigger": true,
+    "expected_behavior": "Explains the BabyTierOS file system and offers to scaffold it"
+  }
+]
