@@ -6,7 +6,7 @@ export const healthcareGroup: FieldGroup = {
   description:
     "Help us understand your practice so we can address compliance and patient needs.",
   sortOrder: 10,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "healthcare.practiceType",

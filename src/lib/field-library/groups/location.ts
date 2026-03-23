@@ -5,7 +5,7 @@ export const locationGroup: FieldGroup = {
   label: "Locations & Service Areas",
   description: "Help us understand your physical presence.",
   sortOrder: 7,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "location.locationCount",

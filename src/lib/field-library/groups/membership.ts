@@ -5,7 +5,7 @@ export const membershipGroup: FieldGroup = {
   label: "Membership & Gated Content",
   description: "Tell us about the members-only experience you want to create.",
   sortOrder: 4,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "membership.memberTypes",

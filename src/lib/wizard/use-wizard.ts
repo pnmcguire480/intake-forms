@@ -8,7 +8,7 @@ import {
   type FieldGroup,
   type FieldDef,
 } from "@/lib/field-library";
-import { resolveStep2Groups, CATEGORY_TO_NEEDS } from "@/lib/rule-engine";
+import { resolveStep2Groups, resolveNeeds, CATEGORY_TO_NEEDS } from "@/lib/rule-engine";
 import { buildSchema } from "./schema-builder";
 
 /**
@@ -41,20 +41,15 @@ export function flattenValues(
 }
 
 // ============================================================
-// useWizard Hook
+// useWizard Hook — 4-step lifecycle
 // ============================================================
-// Manages the 3-step wizard lifecycle:
-//   Step 1 → universal groups (contact, project-type, business-needs)
-//   Step 2 → conditional groups chosen by the rule engine
-//   Step 3 → universal groups (design, closing)
-//
-// A single useForm() instance holds ALL field values across all
-// steps. Per-step validation is done by re-setting the resolver
-// when the step changes, so only the current step's fields are
-// validated on "Next".
+//   Step 1 → contact info only
+//   Step 2 → project type + business needs (primaryGoal + additionalNeeds)
+//   Step 3 → conditional groups chosen by the rule engine (skippable)
+//   Step 4 → design + closing
 // ============================================================
 
-export type WizardStep = 1 | 2 | 3;
+export type WizardStep = 1 | 2 | 3 | 4;
 
 export interface WizardState {
   /** Current step number */
@@ -65,12 +60,12 @@ export interface WizardState {
   fields: FieldDef[];
   /** React Hook Form instance — shared across all steps */
   form: UseFormReturn<Record<string, unknown>>;
-  /** Total number of steps (always 3) */
-  totalSteps: 3;
+  /** Total number of steps */
+  totalSteps: 4;
   /** Whether the user is on the final step */
   isLastStep: boolean;
-  /** Whether Step 2 has any groups (if not, skip it) */
-  hasStep2: boolean;
+  /** Whether Step 3 has any conditional groups (if not, skip it) */
+  hasStep3: boolean;
   /** Validate current step fields, then advance. Returns true if valid. */
   goNext: () => Promise<boolean>;
   /** Go back one step (no validation) */
@@ -89,9 +84,10 @@ export function useWizard(categoryType?: string): WizardState {
   const restoredRef = useRef(false);
   const prefilledRef = useRef(false);
 
-  // --- Step 1 & 3 groups are static ---
+  // --- Static groups per step ---
   const step1Groups = useMemo(() => getGroupsByStep(1), []);
-  const step3Groups = useMemo(() => getGroupsByStep(3), []);
+  const step2Groups = useMemo(() => getGroupsByStep(2), []);
+  const step4Groups = useMemo(() => getGroupsByStep(4), []);
 
   // --- Single form instance for the entire wizard ---
   const form = useForm<Record<string, unknown>>({
@@ -99,42 +95,52 @@ export function useWizard(categoryType?: string): WizardState {
     defaultValues: {},
   });
 
-  // --- Pre-fill keyNeeds from ?type= query param ---
+  // --- Pre-fill from ?type= query param ---
   useEffect(() => {
     if (prefilledRef.current || !categoryType) return;
     const needs = CATEGORY_TO_NEEDS[categoryType];
     if (needs && needs.length > 0) {
+      // Pre-select the additionalNeeds checkboxes from the category mapping
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (form as any).setValue("business-needs.keyNeeds", needs);
+      (form as any).setValue("business-needs.additionalNeeds", needs);
     }
     prefilledRef.current = true;
   }, [categoryType, form]);
 
-  // --- Resolve Step 2 groups from current keyNeeds selections ---
-  const rawNeeds = form.watch("business-needs.keyNeeds");
-  const watchedNeeds = Array.isArray(rawNeeds) ? rawNeeds : [];
+  // --- Resolve Step 3 groups from primaryGoal + additionalNeeds ---
+  const rawGoal = form.watch("business-needs.primaryGoal");
+  const primaryGoal = typeof rawGoal === "string" ? rawGoal : undefined;
 
-  const step2GroupIds = useMemo(
-    () => resolveStep2Groups(watchedNeeds),
-    [JSON.stringify(watchedNeeds)],
+  const rawAdditional = form.watch("business-needs.additionalNeeds");
+  const additionalNeeds = Array.isArray(rawAdditional) ? rawAdditional : [];
+
+  const combinedNeeds = useMemo(
+    () => resolveNeeds(primaryGoal, additionalNeeds),
+    [primaryGoal, JSON.stringify(additionalNeeds)],
   );
 
-  const step2Groups = useMemo(
+  const step3GroupIds = useMemo(
+    () => resolveStep2Groups(combinedNeeds),
+    [JSON.stringify(combinedNeeds)],
+  );
+
+  const step3Groups = useMemo(
     () =>
-      step2GroupIds
+      step3GroupIds
         .map((id) => getGroupById(id))
         .filter((g): g is FieldGroup => g !== undefined),
-    [step2GroupIds],
+    [step3GroupIds],
   );
 
-  const hasStep2 = step2Groups.length > 0;
+  const hasStep3 = step3Groups.length > 0;
 
   // --- Current step's groups and fields ---
   const groups = useMemo(() => {
     if (step === 1) return step1Groups;
     if (step === 2) return step2Groups;
-    return step3Groups;
-  }, [step, step1Groups, step2Groups, step3Groups]);
+    if (step === 3) return step3Groups;
+    return step4Groups;
+  }, [step, step1Groups, step2Groups, step3Groups, step4Groups]);
 
   const fields = useMemo(
     () => groups.flatMap((g) => g.fields),
@@ -144,17 +150,14 @@ export function useWizard(categoryType?: string): WizardState {
   // --- Per-step Zod schema (for trigger validation) ---
   const stepSchema = useMemo(() => buildSchema(fields), [fields]);
 
-  const isLastStep = step === 3;
+  const isLastStep = step === 4;
 
   // --- Navigation ---
-  /** Validate current step. Returns true if valid. Advances step if not last. */
   const goNext = useCallback(async (): Promise<boolean> => {
-    // Flatten nested RHF values to dotted keys matching the Zod schema
     const flat = flattenValues(form.getValues());
     const result = stepSchema.safeParse(flat);
 
     if (!result.success) {
-      // Set errors on the form so the UI shows them
       for (const issue of result.error.issues) {
         const key = issue.path.join(".");
         form.setError(key, { type: "manual", message: issue.message });
@@ -162,23 +165,27 @@ export function useWizard(categoryType?: string): WizardState {
       return false;
     }
 
-    // Advance to next step
+    // Advance to next step (skip Step 3 if no conditional groups)
     if (step === 1) {
-      setStep(hasStep2 ? 2 : 3);
+      setStep(2);
     } else if (step === 2) {
-      setStep(3);
+      setStep(hasStep3 ? 3 : 4);
+    } else if (step === 3) {
+      setStep(4);
     }
-    // If step === 3, the caller handles submission
+    // If step === 4, the caller handles submission
     return true;
-  }, [step, stepSchema, form, hasStep2]);
+  }, [step, stepSchema, form, hasStep3]);
 
   const goBack = useCallback(() => {
-    if (step === 3) {
-      setStep(hasStep2 ? 2 : 1);
+    if (step === 4) {
+      setStep(hasStep3 ? 3 : 2);
+    } else if (step === 3) {
+      setStep(2);
     } else if (step === 2) {
       setStep(1);
     }
-  }, [step, hasStep2]);
+  }, [step, hasStep3]);
 
   const getAllValues = useCallback(
     () => form.getValues(),
@@ -190,7 +197,7 @@ export function useWizard(categoryType?: string): WizardState {
     try {
       sessionStorage.removeItem(STORAGE_KEY);
     } catch {
-      // sessionStorage unavailable (e.g. SSR or private browsing limits)
+      // sessionStorage unavailable
     }
   }, []);
 
@@ -203,7 +210,7 @@ export function useWizard(categoryType?: string): WizardState {
         if (saved.values && typeof saved.values === "object") {
           form.reset(saved.values);
         }
-        if ([1, 2, 3].includes(saved.step)) {
+        if ([1, 2, 3, 4].includes(saved.step)) {
           setStep(saved.step);
         }
       }
@@ -250,9 +257,9 @@ export function useWizard(categoryType?: string): WizardState {
     groups,
     fields,
     form,
-    totalSteps: 3,
+    totalSteps: 4,
     isLastStep,
-    hasStep2,
+    hasStep3,
     goNext,
     goBack,
     getAllValues,

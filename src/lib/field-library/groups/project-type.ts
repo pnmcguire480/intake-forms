@@ -5,7 +5,7 @@ export const projectTypeGroup: FieldGroup = {
   label: "What Are You Looking For?",
   description: "Help us understand the type of project you need.",
   sortOrder: 2,
-  step: 1,
+  step: 2,
   fields: [
     {
       id: "project-type.whatToBuild",
@@ -37,6 +37,35 @@ export const projectTypeGroup: FieldGroup = {
       validation: { required: true },
       layout: "full",
       sortOrder: 2,
+    },
+    {
+      id: "project-type.hasExistingSite",
+      groupId: "project-type",
+      type: "radio-group",
+      label: "Do you have an existing website?",
+      options: [
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" },
+      ],
+      validation: { required: true },
+      layout: "half",
+      sortOrder: 3,
+    },
+    {
+      id: "project-type.existingSiteUrl",
+      groupId: "project-type",
+      type: "text",
+      label: "Current website URL",
+      placeholder: "https://example.com",
+      helpText: "Leave blank if you don't have one.",
+      validation: { required: false },
+      inputType: "url",
+      layout: "half",
+      sortOrder: 4,
+      conditionalOn: {
+        fieldId: "project-type.hasExistingSite",
+        values: ["yes"],
+      },
     },
   ],
 };

@@ -5,7 +5,7 @@ export const eventsGroup: FieldGroup = {
   label: "Events & Ticketing",
   description: "Help us understand the events you run.",
   sortOrder: 5,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "events.eventTypes",

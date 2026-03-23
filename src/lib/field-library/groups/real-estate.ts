@@ -5,7 +5,7 @@ export const realEstateGroup: FieldGroup = {
   label: "Real Estate & Property",
   description: "Tell us about your real estate business and listing needs.",
   sortOrder: 11,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "real-estate.roleType",

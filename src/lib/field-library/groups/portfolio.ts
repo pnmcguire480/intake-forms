@@ -5,7 +5,7 @@ export const portfolioGroup: FieldGroup = {
   label: "Portfolio & Showcase",
   description: "Let's plan how to display your best work.",
   sortOrder: 3,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "portfolio.workType",

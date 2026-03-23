@@ -6,7 +6,7 @@ export const saasGroup: FieldGroup = {
   description:
     "Help us understand your software product so we can build a site that converts.",
   sortOrder: 13,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "saas.productStage",

@@ -3,13 +3,11 @@ import type { FieldGroupId } from "@/lib/field-library";
 // ============================================================
 // Rule Engine
 // ============================================================
-// Maps business-needs.keyNeeds checkbox values to the Step 2
-// field groups the user should see. Each keyNeed value maps to
-// exactly one conditional FieldGroupId. Values with no Step 2
-// group (like "other") are silently ignored.
+// Maps the user's Step 2 answers (primaryGoal + additionalNeeds)
+// to the Step 3 conditional field groups they should see.
 // ============================================================
 
-/** Mapping from a keyNeeds checkbox value to a Step 2 group id */
+/** Mapping from an additionalNeeds checkbox value to a Step 3 group id */
 const NEED_TO_GROUP: Record<string, FieldGroupId> = {
   "sell-products": "ecommerce",
   "book-appointments": "scheduling",
@@ -24,6 +22,16 @@ const NEED_TO_GROUP: Record<string, FieldGroupId> = {
   "property-listings": "real-estate",
   "online-courses": "education",
   "saas-marketing": "saas",
+};
+
+/** Maps primaryGoal radio values to the equivalent need values */
+const GOAL_TO_NEEDS: Record<string, string[]> = {
+  "sell-online": ["sell-products"],
+  "book-services": ["book-appointments"],
+  "showcase-work": ["show-portfolio"],
+  "share-info": [],
+  "donations-members": ["accept-donations", "member-area"],
+  "something-else": [],
 };
 
 /**
@@ -45,12 +53,24 @@ export const CATEGORY_TO_NEEDS: Record<string, string[]> = {
 };
 
 /**
- * Given the user's keyNeeds selections from Step 1, return the
- * list of Step 2 FieldGroupIds they should see — in the same
- * order the groups appear in the field library (by sortOrder).
+ * Combines the primaryGoal radio value and additionalNeeds checkbox
+ * values into a single array of need keys that NEED_TO_GROUP can map.
+ */
+export function resolveNeeds(
+  primaryGoal: string | undefined,
+  additionalNeeds: string[],
+): string[] {
+  const goalNeeds = primaryGoal ? (GOAL_TO_NEEDS[primaryGoal] ?? []) : [];
+  return [...goalNeeds, ...additionalNeeds];
+}
+
+/**
+ * Given a list of need keys, return the Step 3 FieldGroupIds the
+ * user should see. Deduplicates and ignores unknown values.
  *
- * Deduplicates automatically and ignores values that have no
- * matching group (e.g. "other").
+ * This is the same function as before — it still maps need strings
+ * to group ids. The caller (useWizard) now passes the combined
+ * output of resolveNeeds() instead of raw keyNeeds.
  */
 export function resolveStep2Groups(keyNeeds: string[]): FieldGroupId[] {
   const seen = new Set<FieldGroupId>();

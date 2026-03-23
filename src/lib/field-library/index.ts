@@ -22,11 +22,12 @@ export type { FieldDef, FieldGroup, FieldGroupId, FieldOption, FieldType, Valida
 
 /** All field groups (universal + conditional), ordered by step then sortOrder */
 export const ALL_GROUPS: FieldGroup[] = [
-  // Step 1 — Universal
+  // Step 1 — Contact info only
   contactGroup,
+  // Step 2 — Project type & needs
   projectTypeGroup,
   businessNeedsGroup,
-  // Step 2 — Conditional (rule engine selects which appear)
+  // Step 3 — Conditional (rule engine selects which appear)
   ecommerceGroup,
   schedulingGroup,
   portfolioGroup,
@@ -40,7 +41,7 @@ export const ALL_GROUPS: FieldGroup[] = [
   realEstateGroup,
   educationGroup,
   saasGroup,
-  // Step 3 — Universal
+  // Step 4 — Design & wrap-up
   designGroup,
   closingGroup,
 ];
@@ -51,7 +52,7 @@ export function getGroupById(id: FieldGroupId): FieldGroup | undefined {
 }
 
 /** Get all groups assigned to a given wizard step, sorted by sortOrder */
-export function getGroupsByStep(step: 1 | 2 | 3): FieldGroup[] {
+export function getGroupsByStep(step: 1 | 2 | 3 | 4): FieldGroup[] {
   return ALL_GROUPS.filter((g) => g.step === step).sort(
     (a, b) => a.sortOrder - b.sortOrder,
   );

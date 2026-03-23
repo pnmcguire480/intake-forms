@@ -2,6 +2,21 @@ import Link from "next/link";
 
 const categories = [
   {
+    slug: "dad",
+    label: "Dad\u2019s Bees",
+    description: "Honey, beeswax, and the stories behind the hives",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+      />
+    ),
+    color: "bg-amber-50 text-amber-700 border-amber-300 hover:bg-amber-100 hover:border-amber-400",
+    iconBg: "bg-amber-200",
+  },
+  {
     slug: "restaurant",
     label: "Restaurant & Food",
     description: "Restaurants, cafes, bars, catering, food trucks",
@@ -152,21 +167,6 @@ const categories = [
     iconBg: "bg-fuchsia-100",
   },
   {
-    slug: "wizard",
-    label: "Universal Wizard",
-    description: "Not sure? Answer a few questions and we\u2019ll tailor the form to you",
-    icon: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5.002 5.002 0 017.072 0"
-      />
-    ),
-    color: "bg-brand-50 text-brand-600 border-brand-200 hover:bg-brand-100 hover:border-brand-300",
-    iconBg: "bg-brand-100",
-  },
-  {
     slug: "custom",
     label: "Other / Custom",
     description: "Don\u2019t see your category? Start here",
@@ -227,7 +227,7 @@ export default function Home() {
         {categories.map((cat) => (
           <Link
             key={cat.slug}
-            href={cat.slug === "wizard" ? "/q/wizard" : `/q/wizard?type=${cat.slug}`}
+            href={cat.slug === "custom" ? "/q/wizard" : `/q/${cat.slug}`}
             className={`group relative flex items-start gap-4 p-5 rounded-2xl border-2 transition-all duration-200 ${cat.color}`}
           >
             <div

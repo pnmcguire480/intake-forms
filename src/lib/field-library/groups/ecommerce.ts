@@ -6,7 +6,7 @@ export const ecommerceGroup: FieldGroup = {
   description:
     "Help us understand what you're selling and how your store should work.",
   sortOrder: 1,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "ecommerce.whatYouSell",

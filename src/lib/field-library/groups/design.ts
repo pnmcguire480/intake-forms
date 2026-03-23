@@ -5,7 +5,7 @@ export const designGroup: FieldGroup = {
   label: "Design & Branding",
   description: "Help us understand your visual style so the result feels like you.",
   sortOrder: 1,
-  step: 3,
+  step: 4,
   fields: [
     {
       id: "design.brandStatus",

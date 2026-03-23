@@ -3,23 +3,23 @@
 interface StepIndicatorProps {
   currentStep: number;
   totalSteps: number;
-  hasStep2: boolean;
+  hasStep3: boolean;
 }
 
-const STEP_LABELS = ["Your Info", "Your Needs", "Design & Wrap-up"];
+const STEP_LABELS = ["Your Info", "Your Project", "Details", "Design & Wrap-up"];
 
 /**
  * Progress bar showing the user's position in the wizard.
- * Skips the Step 2 dot when hasStep2 is false (per step-skipping rule).
+ * Skips the Step 3 dot when hasStep3 is false (per step-skipping rule).
  */
 export function StepIndicator({
   currentStep,
   totalSteps: _totalSteps,
-  hasStep2,
+  hasStep3,
 }: StepIndicatorProps) {
-  const visibleSteps = hasStep2
-    ? [1, 2, 3]
-    : [1, 3];
+  const visibleSteps = hasStep3
+    ? [1, 2, 3, 4]
+    : [1, 2, 4];
 
   const visibleTotal = visibleSteps.length;
   const visibleIndex = visibleSteps.indexOf(currentStep);

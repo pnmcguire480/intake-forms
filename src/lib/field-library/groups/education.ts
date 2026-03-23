@@ -5,7 +5,7 @@ export const educationGroup: FieldGroup = {
   label: "Education & Online Courses",
   description: "Tell us about the learning experience you want to offer.",
   sortOrder: 12,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "education.educationType",

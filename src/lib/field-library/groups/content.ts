@@ -6,7 +6,7 @@ export const contentGroup: FieldGroup = {
   description:
     "Tell us about the articles, blogs, or media you plan to publish.",
   sortOrder: 6,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "content.contentTypes",

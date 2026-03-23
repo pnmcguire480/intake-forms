@@ -6,7 +6,7 @@ export const schedulingGroup: FieldGroup = {
   description:
     "Tell us about the booking experience you want to offer clients.",
   sortOrder: 2,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "scheduling.appointmentType",

@@ -6,25 +6,30 @@ describe("field library exports", () => {
     expect(ALL_GROUPS).toHaveLength(18);
   });
 
-  it("getGroupsByStep(1) returns 3 groups (contact, project-type, business-needs)", () => {
+  it("getGroupsByStep(1) returns 1 group (contact)", () => {
     const step1 = getGroupsByStep(1);
-    expect(step1).toHaveLength(3);
-    expect(step1.map((g) => g.id)).toEqual([
-      "contact",
+    expect(step1).toHaveLength(1);
+    expect(step1.map((g) => g.id)).toEqual(["contact"]);
+  });
+
+  it("getGroupsByStep(2) returns 2 groups (project-type, business-needs)", () => {
+    const step2 = getGroupsByStep(2);
+    expect(step2).toHaveLength(2);
+    expect(step2.map((g) => g.id)).toEqual([
       "project-type",
       "business-needs",
     ]);
   });
 
-  it("getGroupsByStep(2) returns 13 groups", () => {
-    const step2 = getGroupsByStep(2);
-    expect(step2).toHaveLength(13);
+  it("getGroupsByStep(3) returns 13 conditional groups", () => {
+    const step3 = getGroupsByStep(3);
+    expect(step3).toHaveLength(13);
   });
 
-  it("getGroupsByStep(3) returns 2 groups (design, closing)", () => {
-    const step3 = getGroupsByStep(3);
-    expect(step3).toHaveLength(2);
-    expect(step3.map((g) => g.id)).toEqual(["design", "closing"]);
+  it("getGroupsByStep(4) returns 2 groups (design, closing)", () => {
+    const step4 = getGroupsByStep(4);
+    expect(step4).toHaveLength(2);
+    expect(step4.map((g) => g.id)).toEqual(["design", "closing"]);
   });
 
   it('getGroupById("ecommerce") returns a group with correct id', () => {

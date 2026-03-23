@@ -5,7 +5,7 @@ export const nonprofitGroup: FieldGroup = {
   label: "Nonprofit & Donations",
   description: "Let's plan how to support your mission online.",
   sortOrder: 8,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "nonprofit.orgType",

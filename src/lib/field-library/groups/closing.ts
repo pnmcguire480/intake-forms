@@ -5,7 +5,7 @@ export const closingGroup: FieldGroup = {
   label: "Timeline & Budget",
   description: "Last few questions so we can put together a realistic proposal.",
   sortOrder: 2,
-  step: 3,
+  step: 4,
   fields: [
     {
       id: "closing.timeline",

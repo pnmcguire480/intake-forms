@@ -6,7 +6,7 @@ export const foodServiceGroup: FieldGroup = {
   description:
     "Tell us about your food business so we can build the right experience.",
   sortOrder: 9,
-  step: 2,
+  step: 3,
   fields: [
     {
       id: "food-service.businessType",

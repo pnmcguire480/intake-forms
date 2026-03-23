@@ -12,15 +12,19 @@ import { Honeypot } from "./Honeypot";
 const STEP_TITLES: Record<number, { heading: string; subtitle: string }> = {
   1: {
     heading: "Tell us about you",
-    subtitle: "Basic contact info and what kind of project you need.",
+    subtitle: "Just the basics \u2014 name and contact info.",
   },
   2: {
-    heading: "Details for your project",
-    subtitle: "Answer the questions that match your specific needs.",
+    heading: "About your project",
+    subtitle: "What are you looking to build?",
   },
   3: {
+    heading: "A few more details",
+    subtitle: "Specific questions based on what you told us.",
+  },
+  4: {
     heading: "Design & final details",
-    subtitle: "Style preferences and anything else we should know.",
+    subtitle: "Style preferences, timeline, and anything else.",
   },
 };
 
@@ -105,7 +109,7 @@ export function WizardShell({ categoryType }: { categoryType?: string } = {}) {
           <StepIndicator
             currentStep={wizard.step}
             totalSteps={wizard.totalSteps}
-            hasStep2={wizard.hasStep2}
+            hasStep3={wizard.hasStep3}
           />
         </div>
 

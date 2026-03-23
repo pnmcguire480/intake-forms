@@ -85,19 +85,22 @@ export interface FieldDef {
  * All possible field group identifiers.
  *
  * Universal groups (everyone sees):
- *   contact, project-type, business-needs, design, closing
+ *   Step 1: contact
+ *   Step 2: project-type, business-needs
+ *   Step 4: design, closing
  *
- * Conditional groups (rule engine selects based on Step 1 answers):
- *   ecommerce, scheduling, portfolio, membership, events, content,
+ * Conditional groups (rule engine selects based on Step 2 answers):
+ *   Step 3: ecommerce, scheduling, portfolio, membership, events, content,
  *   location, nonprofit, food-service, healthcare, real-estate,
  *   education, saas
  */
 export type FieldGroupId =
   // Universal — Step 1
   | "contact"
+  // Universal — Step 2
   | "project-type"
   | "business-needs"
-  // Conditional — Step 2
+  // Conditional — Step 3
   | "ecommerce"
   | "scheduling"
   | "portfolio"
@@ -111,7 +114,7 @@ export type FieldGroupId =
   | "real-estate"
   | "education"
   | "saas"
-  // Universal — Step 3
+  // Universal — Step 4
   | "design"
   | "closing";
 
@@ -129,8 +132,8 @@ export interface FieldGroup {
   description?: string;
   /** Ordering among groups within the same step (lower = earlier) */
   sortOrder: number;
-  /** Which wizard step this group appears in (1, 2, or 3) */
-  step: 1 | 2 | 3;
+  /** Which wizard step this group appears in (1, 2, 3, or 4) */
+  step: 1 | 2 | 3 | 4;
   /** The fields in this group, ordered by their sortOrder */
   fields: FieldDef[];
 }
