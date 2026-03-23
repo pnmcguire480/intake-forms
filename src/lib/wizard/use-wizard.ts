@@ -99,13 +99,13 @@ export function useWizard(): WizardState {
   });
 
   // --- Resolve Step 2 groups from current keyNeeds selections ---
-  const watchedNeeds = form.watch("business-needs.keyNeeds") as
-    | string[]
-    | undefined;
+  const rawNeeds = form.watch("business-needs.keyNeeds");
+  const watchedNeeds = Array.isArray(rawNeeds) ? rawNeeds : [];
 
   const step2GroupIds = useMemo(
-    () => resolveStep2Groups(watchedNeeds ?? []),
-    [watchedNeeds],
+    () => resolveStep2Groups(watchedNeeds),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(watchedNeeds)],
   );
 
   const step2Groups = useMemo(
