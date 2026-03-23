@@ -32,8 +32,8 @@ const STEP_TITLES: Record<number, { heading: string; subtitle: string }> = {
  * - Back/Next/Submit navigation
  * - Success screen after submission
  */
-export function WizardShell() {
-  const wizard = useWizard();
+export function WizardShell({ categoryType }: { categoryType?: string } = {}) {
+  const wizard = useWizard(categoryType);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);

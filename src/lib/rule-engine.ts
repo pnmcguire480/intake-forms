@@ -27,6 +27,24 @@ const NEED_TO_GROUP: Record<string, FieldGroupId> = {
 };
 
 /**
+ * Maps a category slug (from the home page) to the keyNeeds values
+ * that should be pre-selected when the wizard loads with ?type=slug.
+ */
+export const CATEGORY_TO_NEEDS: Record<string, string[]> = {
+  restaurant: ["food-ordering"],
+  "small-business": ["book-appointments"],
+  ecommerce: ["sell-products"],
+  portfolio: ["show-portfolio"],
+  nonprofit: ["accept-donations"],
+  "real-estate": ["property-listings"],
+  healthcare: ["patient-intake"],
+  construction: ["book-appointments", "multiple-locations"],
+  fitness: ["book-appointments", "member-area"],
+  events: ["manage-events"],
+  custom: ["other"],
+};
+
+/**
  * Given the user's keyNeeds selections from Step 1, return the
  * list of Step 2 FieldGroupIds they should see — in the same
  * order the groups appear in the field library (by sortOrder).

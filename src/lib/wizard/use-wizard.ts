@@ -8,7 +8,7 @@ import {
   type FieldGroup,
   type FieldDef,
 } from "@/lib/field-library";
-import { resolveStep2Groups } from "@/lib/rule-engine";
+import { resolveStep2Groups, CATEGORY_TO_NEEDS } from "@/lib/rule-engine";
 import { buildSchema } from "./schema-builder";
 
 /**
@@ -84,9 +84,10 @@ export interface WizardState {
 const STORAGE_KEY = "wizard-progress";
 const DEBOUNCE_MS = 400;
 
-export function useWizard(): WizardState {
+export function useWizard(categoryType?: string): WizardState {
   const [step, setStep] = useState<WizardStep>(1);
   const restoredRef = useRef(false);
+  const prefilledRef = useRef(false);
 
   // --- Step 1 & 3 groups are static ---
   const step1Groups = useMemo(() => getGroupsByStep(1), []);
@@ -98,13 +99,23 @@ export function useWizard(): WizardState {
     defaultValues: {},
   });
 
+  // --- Pre-fill keyNeeds from ?type= query param ---
+  useEffect(() => {
+    if (prefilledRef.current || !categoryType) return;
+    const needs = CATEGORY_TO_NEEDS[categoryType];
+    if (needs && needs.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (form as any).setValue("business-needs.keyNeeds", needs);
+    }
+    prefilledRef.current = true;
+  }, [categoryType, form]);
+
   // --- Resolve Step 2 groups from current keyNeeds selections ---
   const rawNeeds = form.watch("business-needs.keyNeeds");
   const watchedNeeds = Array.isArray(rawNeeds) ? rawNeeds : [];
 
   const step2GroupIds = useMemo(
     () => resolveStep2Groups(watchedNeeds),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [JSON.stringify(watchedNeeds)],
   );
 

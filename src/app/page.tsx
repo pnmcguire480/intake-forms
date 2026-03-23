@@ -227,7 +227,7 @@ export default function Home() {
         {categories.map((cat) => (
           <Link
             key={cat.slug}
-            href="/q/wizard"
+            href={cat.slug === "wizard" ? "/q/wizard" : `/q/wizard?type=${cat.slug}`}
             className={`group relative flex items-start gap-4 p-5 rounded-2xl border-2 transition-all duration-200 ${cat.color}`}
           >
             <div

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function FitnessPage() {
-  redirect("/q/wizard");
+export default function Page() {
+  redirect("/q/wizard?type=fitness");
 }

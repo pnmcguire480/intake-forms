@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function RealEstatePage() {
-  redirect("/q/wizard");
+export default function Page() {
+  redirect("/q/wizard?type=real-estate");
 }
