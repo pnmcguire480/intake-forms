@@ -112,6 +112,9 @@ export default function RootLayout({
             <p className="text-xs text-gray-400">
               This form is for authorized recipients only.
             </p>
+            <p className="text-xs text-gray-300 pt-2">
+              &copy; {new Date().getFullYear()} McGuire Digital
+            </p>
           </div>
         </footer>
       </body>
