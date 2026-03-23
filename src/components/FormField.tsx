@@ -120,7 +120,7 @@ interface CheckboxGroupProps {
   error?: FormError;
 }
 
-export function CheckboxGroup({ options, registration, error }: CheckboxGroupProps) {
+export function CheckboxGroup({ options, registration, error: _error }: CheckboxGroupProps) {
   return (
     <div className="space-y-2">
       {options.map((opt) => (
@@ -146,7 +146,7 @@ interface RadioGroupProps {
   error?: FormError;
 }
 
-export function RadioGroup({ options, registration, error }: RadioGroupProps) {
+export function RadioGroup({ options, registration, error: _error }: RadioGroupProps) {
   return (
     <div className="space-y-2">
       {options.map((opt) => (

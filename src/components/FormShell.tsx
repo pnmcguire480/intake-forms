@@ -11,7 +11,7 @@ interface FormShellProps {
   }) => React.ReactNode;
 }
 
-export function FormShell({ title, subtitle, formName, children }: FormShellProps) {
+export function FormShell({ title, subtitle, formName: _formName, children }: FormShellProps) {
   const [submitted, setSubmitted] = useState(false);
 
   if (submitted) {

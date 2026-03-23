@@ -1,10 +1,39 @@
 import type { Metadata } from "next";
+import { Analytics } from "@/components/Analytics";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Client Intake Form",
-  description: "Secure project questionnaire",
+  title: "Project Intake — Tell Us About Your Project",
+  description:
+    "Answer a few questions about your business and goals so we can put together the right plan for your website.",
   robots: { index: false, follow: false },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/images/favicon/favicon.svg", type: "image/svg+xml" },
+      { url: "/images/favicon/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/images/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/images/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [
+      { url: "/images/favicon/apple-touch-icon.png", sizes: "180x180" },
+    ],
+  },
+  manifest: "/site.webmanifest",
+  openGraph: {
+    title: "Project Intake — Tell Us About Your Project",
+    description:
+      "Answer a few questions about your business and goals so we can put together the right plan for your website.",
+    type: "website",
+    locale: "en_US",
+    siteName: "Project Intake",
+  },
+  twitter: {
+    card: "summary",
+    title: "Project Intake — Tell Us About Your Project",
+    description:
+      "Answer a few questions about your business and goals so we can put together the right plan for your website.",
+  },
 };
 
 export default function RootLayout({
@@ -21,6 +50,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col">
+        <Analytics />
         {/* Header */}
         <header className="bg-white border-b border-gray-200 px-6 py-4">
           <div className="max-w-3xl mx-auto flex items-center justify-between">
